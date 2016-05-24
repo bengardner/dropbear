@@ -25,9 +25,13 @@
 #ifndef DROPBEAR_INCLUDES_H_
 #define DROPBEAR_INCLUDES_H_
 
+#define TRIO_REPLACE_STDIO
+#include "libtrio.h"
 
 #include "options.h"
 #include "debug.h"
+
+#include <time.h>
 
 #include <sys/types.h>
 #include <sys/ioctl.h>
@@ -38,6 +42,7 @@
 #include <sys/un.h>
 #include <sys/wait.h>
 #include <sys/resource.h>
+#include <sys/select.h>
 
 #include <stdio.h>
 #include <errno.h>
