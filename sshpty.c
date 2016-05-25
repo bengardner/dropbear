@@ -234,6 +234,20 @@ pty_allocate(int *ptyfd, int *ttyfd, char *namebuf, int namebuflen)
 			}
 		}
 
+		if (tcgetattr(*ttyfd, &tio) == 0) {
+			/* LOS178 hack */
+			tio.c_cc[VINTR]  = 0x03;
+			tio.c_cc[VERASE] = 0x08;
+			tio.c_cc[VKILL]  = 0x15;
+
+			/* Set the new modes for the terminal. */
+			if (tcsetattr(*ttyfd, TCSANOW, &tio) < 0) {
+				dropbear_log(LOG_WARNING,
+					"Setting tty modes for tty failed: %.100s",
+					strerror(errno));
+			}
+		}
+
 		return 1;
 	}
 	dropbear_log(LOG_WARNING, "Failed to open any /dev/pty?? devices");
