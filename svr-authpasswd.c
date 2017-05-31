@@ -33,6 +33,13 @@
 
 #if DROPBEAR_SVR_PASSWORD_AUTH
 
+#ifdef BUNDLED_CRYPT
+#define DROPBEAR_PW_CRYPT	db_pw_crypt
+#include "svr-pw_crypt.c"
+#else
+#define DROPBEAR_PW_CRYPT	crypt
+#endif
+
 /* not constant time when strings are differing lengths. 
  string content isn't leaked, and crypt hashes are predictable length. */
 static int constant_time_strcmp(const char* a, const char* b) {

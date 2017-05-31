@@ -182,19 +182,41 @@ AC_CHECK_DECL(__UCLIBC__,
 	AC_MSG_NOTICE([Using uClibc - login() and logout() probably don't work, so we won't use them.])
 	],,)
 
-dnl We test for crypt() specially. On Linux (and others?) it resides in libcrypt
-dnl but we don't want link all binaries to -lcrypt, just dropbear server.
-dnl OS X doesn't need -lcrypt 
-AC_CHECK_FUNC(crypt, found_crypt_func=here)
-AC_CHECK_LIB(crypt, crypt, 
+dnl Override the system crypt() function with one that only supports MD5, SHA256, and SHA512
+AC_ARG_ENABLE(bundled-crypt,
+[  --enable-bundled-crypt       Force using bundled crypt() even if a system version exists.
+  --disable-bundled-crypt       Default is to use system if available, otherwise bundled.],
 	[
-	CRYPTLIB="-lcrypt"
-	found_crypt_func=here
-	])
-AC_SUBST(CRYPTLIB)	
-if test "t$found_crypt_func" = there; then
-AC_DEFINE(HAVE_CRYPT, 1, [crypt() function])
+		if test "x$enableval" = "xyes"; then
+			BUNDLED_CRYPT=1
+			AC_MSG_NOTICE(Forcing bundled crypt)
+		else
+			BUNDLED_CRYPT=0
+		fi
+	],
+	[
+		BUNDLED_CRYPT=0
+	]
+)
+
+if test $BUNDLED_CRYPT = 1 ; then
+	AC_DEFINE(BUNDLED_CRYPT,,Use bundled crypt)
+else
+	dnl We test for crypt() specially. On Linux (and others?) it resides in libcrypt
+	dnl but we don't want link all binaries to -lcrypt, just dropbear server.
+	dnl OS X doesn't need -lcrypt
+	AC_CHECK_FUNC(crypt, found_crypt_func=here)
+	AC_CHECK_LIB(crypt, crypt,
+		[
+		CRYPTLIB="-lcrypt"
+		found_crypt_func=here
+		])
+	AC_SUBST(CRYPTLIB)
+	if test "t$found_crypt_func" = there; then
+		AC_DEFINE(HAVE_CRYPT, 1, [crypt() function])
+	fi
 fi
+
 
 # Check if zlib is needed
 AC_ARG_WITH(zlib,
