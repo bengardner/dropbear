@@ -247,6 +247,7 @@ pty_allocate(int *ptyfd, int *ttyfd, char *namebuf, int namebuflen)
 void
 pty_release(const char *tty_name)
 {
+#ifndef READONLY_DEVFS
 	if (chown(tty_name, (uid_t) 0, (gid_t) 0) < 0
 			&& (errno != ENOENT)) {
 		dropbear_log(LOG_ERR,
@@ -257,6 +258,7 @@ pty_release(const char *tty_name)
 		dropbear_log(LOG_ERR,
 			"chmod %.100s 0666 failed: %.100s", tty_name, strerror(errno));
 	}
+#endif
 }
 
 /* Makes the tty the processes controlling tty and sets it to sane modes. */
@@ -380,6 +382,7 @@ pty_setowner(struct passwd *pw, const char *tty_name)
 				tty_name, strerror(errno));
 	}
 
+#ifndef READONLY_DEVFS
 	if (st.st_uid != pw->pw_uid || st.st_gid != gid) {
 		if (chown(tty_name, pw->pw_uid, gid) < 0) {
 			if (errno == EROFS &&
@@ -409,4 +412,5 @@ pty_setowner(struct passwd *pw, const char *tty_name)
 			}
 		}
 	}
+#endif
 }
