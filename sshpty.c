@@ -217,8 +217,10 @@ pty_allocate(int *ptyfd, int *ttyfd, char *namebuf, int namebuflen)
 		}
 		/* set tty modes to a sane state for broken clients */
 		if (tcgetattr(*ptyfd, &tio) < 0) {
-			dropbear_log(LOG_WARNING,
-				"ptyallocate: tty modes failed: %.100s", strerror(errno));
+			if (isatty(*ptyfd)) {
+				dropbear_log(LOG_WARNING,
+					"ptyallocate: tty modes failed: %.100s", strerror(errno));
+			}
 		} else {
 			tio.c_lflag |= (ECHO | ISIG | ICANON);
 			tio.c_oflag |= (OPOST | ONLCR);
