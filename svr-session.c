@@ -208,17 +208,36 @@ void svr_dropbear_exit(int exitcode, const char* format, va_list param) {
 
 /* priority is priority as with syslog() */
 void svr_dropbear_log(int priority, const char* format, va_list param) {
-
+	static int kmsg_fd;
 	char printbuf[1024];
 	char datestr[20];
 	time_t timesec;
 	int havetrace = 0;
+	int hdr_len = 0;
 
-	vsnprintf(printbuf, sizeof(printbuf), format, param);
+	if (kmsg_fd == 0) {
+		kmsg_fd = open("/dev/kmsg", O_WRONLY);
+	}
+
+	if (!opts.usingsyslog || havetrace || (kmsg_fd > 0)) {
+		struct tm * local_tm = NULL;
+		timesec = time(NULL);
+		local_tm = localtime(&timesec);
+		if (local_tm == NULL
+			|| strftime(datestr, sizeof(datestr), "%b %d %H:%M:%S",
+						local_tm) == 0)
+		{
+			/* upon failure, just print the epoch-seconds time. */
+			snprintf(datestr, sizeof(datestr), "%d", (int)timesec);
+		}
+		hdr_len = snprintf(printbuf, sizeof(printbuf), "[%d] %d %s ", getpid(), priority, datestr);
+	}
+
+	vsnprintf(printbuf + hdr_len, sizeof(printbuf) - hdr_len, format, param);
 
 #ifndef DISABLE_SYSLOG
 	if (opts.usingsyslog) {
-		syslog(priority, "%s", printbuf);
+		syslog(priority, "%s", printbuf + hdr_len);
 	}
 #endif
 
@@ -229,17 +248,10 @@ void svr_dropbear_log(int priority, const char* format, va_list param) {
 #endif
 
 	if (!opts.usingsyslog || havetrace) {
-		struct tm * local_tm = NULL;
-		timesec = time(NULL);
-		local_tm = localtime(&timesec);
-		if (local_tm == NULL
-			|| strftime(datestr, sizeof(datestr), "%b %d %H:%M:%S", 
-						local_tm) == 0)
-		{
-			/* upon failure, just print the epoch-seconds time. */
-			snprintf(datestr, sizeof(datestr), "%d", (int)timesec);
-		}
-		fprintf(stderr, "[%d] %s %s\n", getpid(), datestr, printbuf);
+		fprintf(stderr, "%s\n", printbuf);
+	}
+	if (kmsg_fd > 0) {
+		write(kmsg_fd, printbuf, strlen(printbuf));
 	}
 }
 
