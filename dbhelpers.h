@@ -7,7 +7,7 @@
 #include "config.h"
 
 #ifdef __GNUC__
-#define ATTRIB_PRINTF(fmt,args) __attribute__((format(printf, fmt, args))) 
+#define ATTRIB_PRINTF(fmt,args) __attribute__((format(__printf__, fmt, args)))
 #define ATTRIB_NORETURN __attribute__((noreturn))
 #define ATTRIB_SENTINEL __attribute__((sentinel))
 #else
