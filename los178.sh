@@ -11,11 +11,13 @@ if [ "$OBJSFORMAT" = "coff" ] ; then
 	NO_BSWAP="-DLTC_NO_BSWAP"
 fi
 
+if [ -z "$SKIP_CONFIG" ] ; then
 CPPFLAGS="-DVMOS_DEV -D__NO_INCLUDE_WARN__ $NO_BSWAP" \
 LDFLAGS="-Wl,--start-group -lbsd -ltrio" \
 ./configure --host=x86 --disable-lastlog --disable-utmp --disable-utmpx \
  --disable-wtmp --disable-wtmpx --disable-syslog --enable-bundled-libtom \
  --prefix=/bin --enable-bundled-crypt
+fi
 
 # Build dropbear and scp
 lwsmgr
