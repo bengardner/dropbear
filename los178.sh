@@ -2,11 +2,16 @@
 # Build dropbear. It will be included in the bsp.
 
 if ! [ -e configure ] ; then
-  autoconf
-  autoheader
+	autoconf
+	autoheader
 fi
 
-CPPFLAGS="-DVMOS_DEV -D__NO_INCLUDE_WARN__" \
+NO_BSWAP=""
+if [ "$OBJSFORMAT" = "coff" ] ; then
+	NO_BSWAP="-DLTC_NO_BSWAP"
+fi
+
+CPPFLAGS="-DVMOS_DEV -D__NO_INCLUDE_WARN__ $NO_BSWAP" \
 LDFLAGS="-Wl,--start-group -lbsd -ltrio" \
 ./configure --host=x86 --disable-lastlog --disable-utmp --disable-utmpx \
  --disable-wtmp --disable-wtmpx --disable-syslog --enable-bundled-libtom \
