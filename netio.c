@@ -455,7 +455,15 @@ int dropbear_listen(const char* address, const char* port,
 	TRACE(("enter dropbear_listen"))
 	
 	memset(&hints, 0, sizeof(hints));
-	hints.ai_family = AF_UNSPEC; /* TODO: let them flag v4 only etc */
+	/* LOS178-2.2.4 provides a broken implementation of getaddrinfo().
+	 * Specifically, AF_UNSPEC combined with AI_PASSIVE returns EAI_ADDRFAMILY
+	 * instead of addresses. Using AF_INET (the only supported family) works
+	 * around the error.
+	 * A bug report was submitted to Lynx on Jun 19, 2018.
+	 * We'll see if they fix it. Other versions (2.3.0 and 2.3.2) did not have
+	 * getaddrinfo(), so we use fake-rfc2553.
+	 */
+	hints.ai_family = AF_INET; //AF_UNSPEC; /* TODO: let them flag v4 only etc */
 	hints.ai_socktype = SOCK_STREAM;
 
 	/* for calling getaddrinfo:
