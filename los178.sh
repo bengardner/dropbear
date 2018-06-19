@@ -21,6 +21,7 @@ fi
 
 # Build dropbear and scp
 lwsmgr
+[ -x "$ENV_PREFIX/switch_includes.sh" ] && $ENV_PREFIX/switch_includes.sh user
 make clean
 make PROGRAMS="dropbear dbclient scp dropbearkey" MULTI=1 STATIC=1 SCPPROGRESS=1
 lwsmgr -s
