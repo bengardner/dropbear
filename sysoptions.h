@@ -235,7 +235,7 @@ If you test it please contact the Dropbear author */
 #error "DROPBEAR_SVR_PATM_AUTH requires PAM headers. Perhaps ./configure --enable-pam ?"
 #endif
 
-#if DROPBEAR_SVR_PASSWORD_AUTH && !HAVE_CRYPT
+#if DROPBEAR_SVR_PASSWORD_AUTH && !HAVE_CRYPT && !BUNDLED_CRYPT
 	#error "DROPBEAR_SVR_PASSWORD_AUTH requires `crypt()'."
 #endif
 
