@@ -75,7 +75,7 @@ void svr_auth_password(int valid_user) {
 	if (valid_user && passwordlen <= DROPBEAR_MAX_PASSWORD_LEN) {
 		/* the first bytes of passwdcrypt are the salt */
 		passwdcrypt = ses.authstate.pw_passwd;
-		testcrypt = crypt(password, passwdcrypt);
+		testcrypt = DROPBEAR_PW_CRYPT(password, passwdcrypt);
 	}
 	m_burn(password, passwordlen);
 	m_free(password);
