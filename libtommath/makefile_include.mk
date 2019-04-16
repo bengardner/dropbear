@@ -29,11 +29,15 @@ ifndef MAKE
    MAKE=make
 endif
 
-CFLAGS += -I./ -Wall -Wsign-compare -Wextra -Wshadow
+CFLAGS += -I./ -Wall -Wsign-compare  -Wshadow
+#CFLAGS += -Wextra
 
 ifndef NO_ADDTL_WARNINGS
 # additional warnings
-CFLAGS += -Wsystem-headers -Wdeclaration-after-statement -Wbad-function-cast -Wcast-align
+#CFLAGS += -Wsystem-headers
+#CFLAGS += -Wdeclaration-after-statement
+CFLAGS += -Wbad-function-cast
+CFLAGS += -Wcast-align
 CFLAGS += -Wstrict-prototypes -Wpointer-arith
 endif
 

@@ -65,7 +65,7 @@ LTC_CFLAGS += -W
 # define this to help
 LTC_CFLAGS += -DLTC_NO_ROLC
 else
-LTC_CFLAGS += -Wextra
+#LTC_CFLAGS += -Wextra
 # additional warnings
 LTC_CFLAGS += -Wsystem-headers -Wbad-function-cast -Wcast-align
 LTC_CFLAGS += -Wstrict-prototypes -Wpointer-arith
