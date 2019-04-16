@@ -11,16 +11,17 @@ if [ "$OBJSFORMAT" = "coff" ] ; then
 	NO_BSWAP="-DLTC_NO_BSWAP"
 fi
 
+lwsmgr
+
 if [ -z "$SKIP_CONFIG" ] ; then
 CPPFLAGS="-DVMOS_DEV -D__NO_INCLUDE_WARN__ $NO_BSWAP" \
 LDFLAGS="-Wl,--start-group -lbsd -ltrio" \
 ./configure --host=x86 --disable-lastlog --disable-utmp --disable-utmpx \
  --disable-wtmp --disable-wtmpx --disable-syslog --enable-bundled-libtom \
- --prefix=/bin --enable-bundled-crypt
+ --prefix=/bin --enable-bundled-crypt --enable-static
 fi
 
 # Build dropbear and scp
-lwsmgr
 [ -x "$ENV_PREFIX/switch_includes.sh" ] && $ENV_PREFIX/switch_includes.sh user
 make clean
 make PROGRAMS="dropbear dbclient scp dropbearkey" MULTI=1 STATIC=1 SCPPROGRESS=1
