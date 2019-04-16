@@ -451,6 +451,8 @@ int dropbear_listen(const char* address, const char* port,
 	struct linger linger;
 	int val;
 	int sock;
+	u_int16_t *allocated_lport_p = NULL;
+	int allocated_lport = 0;
 
 	TRACE(("enter dropbear_listen"))
 	
@@ -503,8 +505,6 @@ int dropbear_listen(const char* address, const char* port,
 	 * caller can do a get_socket_address to discover assigned-port
 	 * hence, use same port for all address families
 	 */
-	u_int16_t *allocated_lport_p = NULL;
-	int allocated_lport = 0;
 
 	nsock = 0;
 	for (res = res0; res != NULL && nsock < sockcount;
