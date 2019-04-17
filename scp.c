@@ -284,6 +284,7 @@ typedef struct {
 
 BUF *allocbuf(BUF *, int, int);
 void lostconn(int);
+void sigalarm_handler(int signo);
 void nospace(void);
 int okname(char *);
 void run_err(const char *,...);
@@ -317,6 +318,8 @@ main(int argc, char **argv)
 	char *targ, *endp;
 	extern char *optarg;
 	extern int optind;
+
+	(void) signal(SIGALRM, sigalarm_handler);
 
 	/* Ensure that fds 0, 1 and 2 are open or directed to /dev/null */
 	sanitise_stdfd();
@@ -1256,4 +1259,8 @@ lostconn(int signo)
 		_exit(1);
 	else
 		exit(1);
+}
+
+void sigalarm_handler(int signo)
+{
 }

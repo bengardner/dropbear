@@ -41,7 +41,13 @@ atomicio(ssize_t (*f) (int, void *, size_t), int fd, void *_s, size_t n)
 	size_t pos = 0;
 	ssize_t res;
 
+/* LOS178 is a buggy piece of ****.
+ * read() sometimes blocks when it shouldn't on a FIFO.
+ * Oddly enough, a kick from a signal makes it wake up and work properly.
+ * The alarm() call will snap LOS178 out of it.
+ */
 	while (n > pos) {
+		alarm(2);
 		res = (f) (fd, s + pos, n - pos);
 		switch (res) {
 		case -1:
