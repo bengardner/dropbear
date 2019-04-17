@@ -18,7 +18,7 @@ CPPFLAGS="-DVMOS_DEV -D__NO_INCLUDE_WARN__ $NO_BSWAP" \
 LDFLAGS="-Wl,--start-group -lbsd -ltrio" \
 ./configure --host=x86 --disable-lastlog --disable-utmp --disable-utmpx \
  --disable-wtmp --disable-wtmpx --disable-syslog --enable-bundled-libtom \
- --prefix=/bin --enable-bundled-crypt --enable-static
+ --prefix=/bin --enable-bundled-crypt --enable-static --disable-harden
 fi
 
 # Build dropbear and scp
