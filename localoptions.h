@@ -4,10 +4,8 @@
 
 #define DROPBEAR_PIDFILE "/run/dropbear.pid"
 
-
 #define DROPBEAR_LISTEN_BACKLOG 2
 
 #define READONLY_DEVFS 1
-#define BUNDLED_CRYPT 1
 
 #define DROPBEAR_MD5_HMAC 1
