@@ -13,6 +13,7 @@
 /dropbearconvert
 /dropbearkey
 /dropbearmulti
+/dropbearmulti.stripped
 /scp
 /scp-progress
 Makefile
